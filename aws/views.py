@@ -65,10 +65,7 @@ def welcome():
 
 def main():
     welcome()
-    session = boto3.Session(
-        aws_access_key_id="AKIAJBNEB6XPLCWB56WA",
-        aws_secret_access_key="+OjPo+WbjSUFN7trt+mhAh72VSVu+toPG3rE+UKa",
-    )
+
 
     #my_region=raw_input("Endter your region name:")
     my_region="us-east-1"
@@ -97,12 +94,13 @@ def main():
 
 
 def stop(request):
-    session = boto3.Session(
-        aws_access_key_id="AKIAJBNEB6XPLCWB56WA",
-        aws_secret_access_key="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",
-    )
-    ec2 = session.resource('ec2')
-    instance = ec2.Instance('i-093f0b73a2ed67c2d')
-    instance.stop()
+    #session = boto3.Session(
+    #    aws_access_key_id="AKIAJBNEB6XPLCWB56WA",
+    #    aws_secret_access_key="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",
+    #)
+    #ec2 = session.resource('ec2')
+    #instance = ec2.Instance('i-093f0b73a2ed67c2d')
+    #instance.stop()
+    main()
     return render(request, 'instance.html')
 
