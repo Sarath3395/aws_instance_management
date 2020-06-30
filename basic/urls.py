@@ -20,4 +20,6 @@ urlpatterns = [
     path('', include('aws.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path('instances/', include('instances.urls')),
+
 ]

@@ -1,0 +1,16 @@
+<h2>instance for this region</h2>
+<div>
+
+    <table>
+        <tbody>
+        {% for each in list %}
+
+        <tr><td><h3>{{each}}</h3></td><td> <input type="hidden" value={{each}} name = "startid"><a href="start" >Start</a>  </td><td> <a href="stop" onclick={{each}} name="stop">Stop</a> </td></tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    {% csrf_token %}
+</div>
