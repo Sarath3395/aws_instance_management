@@ -9,6 +9,8 @@ region = ""
 aws_access_key_id = ""
 aws_secret_access_key = ""
 
+
+
 def get_ec2_con_for_given_region(my_regions,my_aws_access_key_id,my_aws_secret_access_key):
     session = boto3.Session(
             aws_access_key_id=my_aws_access_key_id,
@@ -61,7 +63,7 @@ def welcome():
     print("Enjou it")
     time.sleep(3)
 
-def main(start_stops,instance_id,region):
+def main(start_stops,instance_id,region,aws_access_key_id,aws_secret_access_key):
     welcome()
 
 
@@ -102,20 +104,54 @@ def stop(request):
     #instance.stop()
     instance_id = request.GET["instance_id"]
     region = request.GET["region"]
+    aws_access_key_id=request.session['session_aws_access_key_id']
+    aws_secret_access_key=request.session['session_aws_secret_access_key']
 
-    main("stop",instance_id,region)
-    return render(request, 'instancestopped.html')
+    main("stop",instance_id,region,aws_access_key_id,aws_secret_access_key)
+
+
+    ec2_con_re={}
+    ec2_con_re=get_ec2_con_for_given_region(region,aws_access_key_id,aws_secret_access_key)
+    print("please wait listing all instances ids in your region{}".format(region))
+    list=list_instances_on_my_region(ec2_con_re)
+
+    status={}
+    for each in list:
+        prs=get_instance_state(ec2_con_re,each)
+        status[each]=prs
+
+    print(status)
+
+    return render(request, 'instances.html',{'region':region, 'status':status})
+
+
+    #return render(request, 'instancestopped.html')
 
 def start(request):
     instance_id = request.GET["instance_id"]
     region = request.GET["region"]
-
+    aws_access_key_id=request.session['session_aws_access_key_id']
+    aws_secret_access_key=request.session['session_aws_secret_access_key']
     #print("+++++++++++"+instance_id)
-    main("start",instance_id,region)
+    main("start",instance_id,region,aws_access_key_id,aws_secret_access_key)
     #return redirect('regioninstances')
 
 
-    return render(request, 'instancestarted.html')
+
+    ec2_con_re={}
+    ec2_con_re=get_ec2_con_for_given_region(region,aws_access_key_id,aws_secret_access_key)
+    print("please wait listing all instances ids in your region{}".format(region))
+    list=list_instances_on_my_region(ec2_con_re)
+
+    status={}
+    for each in list:
+        prs=get_instance_state(ec2_con_re,each)
+        status[each]=prs
+
+    print(status)
+
+    return render(request, 'instances.html',{'region':region, 'status':status})
+    #return render(request, 'instancestarted.html')
     #return redirect(request.META['HTTP_REFERER'])
 
 
@@ -126,7 +162,10 @@ def regioninstances(request):
     if request.method == 'POST':
         region= request.POST['region']
         aws_access_key_id= request.POST['aws_access_key']
+        request.session['session_aws_access_key_id'] = aws_access_key_id
         aws_secret_access_key= request.POST['aws_secret_access_key']
+        request.session['session_aws_secret_access_key'] = aws_secret_access_key
+
         ec2_con_re={}
         ec2_con_re=get_ec2_con_for_given_region(region,aws_access_key_id,aws_secret_access_key)
         print("please wait listing all instances ids in your region{}".format(region))
@@ -134,10 +173,8 @@ def regioninstances(request):
 
         status={}
         for each in list:
-            print("EEEEEEEEEEEEe"+each)
 
             prs=get_instance_state(ec2_con_re,each)
-            print("prssssssssssssssss"+prs)
             status[each]=prs
 
         print(status)
