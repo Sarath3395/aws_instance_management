@@ -1,16 +1,55 @@
-<h2>instance for this region</h2>
+<h2>Instances from This Region({{region}})</h2>
 <div>
 
-    <table>
+    <table id="customers">
         <tbody>
-        {% for each in list %}
+        <tr>
+            <th>Instance_Id</th>
+            <th>Status</th>
+            <th>Start</th>
+            <th>Stop</th>
+        </tr>
+        {% for each,sts in status.items %}
+<form action = "start" method="get">
+<!--
+        <tr><td><h3>{{each}}</h3></td><td> <a href="start?instance_id={{each}}&region={{region}}" >Start</a>  </td><td> <a href="stop?instance_id={{each}}&region={{region}}" >Stop</a> </td></tr>
+-->
 
-        <tr><td><h3>{{each}}</h3></td><td> <input type="hidden" value={{each}} name = "startid"><a href="start" >Start</a>  </td><td> <a href="stop" onclick={{each}} name="stop">Stop</a> </td></tr>
+
+    <tr><td><h3>{{each}}</h3></td><td><h3>{{sts}}</h3></td><td> <a href="start?instance_id={{each}}&region={{region}}" >Start</a>  </td><td> <a href="stop?instance_id={{each}}&region={{region}}" >Stop</a> </td></tr>
 
         {% endfor %}
-
+</form>
         </tbody>
     </table>
 
     {% csrf_token %}
 </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #customers {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+        #customers tr:hover {background-color: #ddd;}
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+
