@@ -1,0 +1,31 @@
+<!--<tr>-->
+<!--    <th>Instance_Id</th>-->
+<!--    <th>Status</th>-->
+<!--    <th>Start</th>-->
+<!--    <th>Stop</th>-->
+<!--</tr>-->
+<!--{% for each,sts in status.items %}-->
+<!--<tr>-->
+<!--    <td><h3>{{each}}</h3></td><td><h3>{{sts}}</h3></td><td> <a href="start?instance_id={{each}}&region={{region}}" >Start</a>  </td><td> <a href="stop?instance_id={{each}}&region={{region}}" >Stop</a> </td>-->
+<!--</tr>-->
+<!--{% endfor %}-->
+
+
+<tr>
+            <th>Instance_Id</th>
+            <th>Start</th>
+            <th>Stop</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+
+        {% for ins,det in status.items %}
+        <tr>
+            <td><h3>{{ins}}</h3></td>
+            <td> <a href="start?instance_id={{ins}}&region={{region}}" >Start</a>
+            </td><td> <a href="stop?instance_id={{ins}}&region={{region}}" >Stop</a> </td>
+             {% for st,ty in det.items %}
+            <td><h3>{{ty}}</h3></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}

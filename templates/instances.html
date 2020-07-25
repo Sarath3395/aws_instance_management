@@ -1,50 +1,34 @@
-<h2>Instances from This Region({{region}})</h2>
-<div>
-
-    <table id="customers">
-        <tbody>
-        <tr>
-            <th>Instance_Id</th>
-            <th>Status</th>
-            <th>Start</th>
-            <th>Stop</th>
-        </tr>
-        {% for each,sts in status.items %}
-<form action = "start" method="get">
-<!--
-        <tr><td><h3>{{each}}</h3></td><td> <a href="start?instance_id={{each}}&region={{region}}" >Start</a>  </td><td> <a href="stop?instance_id={{each}}&region={{region}}" >Stop</a> </td></tr>
--->
-
-
-    <tr><td><h3>{{each}}</h3></td><td><h3>{{sts}}</h3></td><td> <a href="start?instance_id={{each}}&region={{region}}" >Start</a>  </td><td> <a href="stop?instance_id={{each}}&region={{region}}" >Stop</a> </td></tr>
-
-        {% endfor %}
-</form>
-        </tbody>
-    </table>
-
-    {% csrf_token %}
-</div>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        #customers {
+	{% load static %}
+
+	<title>AWSInstanceManagement</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Travello template project">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="./javascript.js"></script>
+
+
+<style>
+        #_appendHere {
             font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
             border-collapse: collapse;
             width: 100%;
         }
 
-        #customers td, #customers th {
+        #_appendHere td, #_appendHere th {
             border: 1px solid #ddd;
             padding: 8px;
         }
 
-        #customers tr:nth-child(even){background-color: #f2f2f2;}
+        #_appendHere tr:nth-child(even){background-color: #f2f2f2;}
 
-        #customers tr:hover {background-color: #ddd;}
+        #_appendHere tr:hover {background-color: #ddd;}
 
-        #customers th {
+        #_appendHere th {
             padding-top: 12px;
             padding-bottom: 12px;
             text-align: left;
@@ -52,4 +36,42 @@
             color: white;
         }
     </style>
+
+</head>
+<body>
+<h2>Instances from This Region({{region}})</h2>
+
+
+<div id = "ref">
+
+
+<table id="_appendHere">
+        <tbody>
+        <tr>
+            <th>Instance_Id</th>
+            <th>Start</th>
+            <th>Stop</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+
+        {% for ins,det in status.items %}
+        <tr>
+            <td><h3>{{ins}}</h3></td>
+            <td> <a href="start?instance_id={{ins}}&region={{region}}" >Start</a>
+            </td><td> <a href="stop?instance_id={{ins}}&region={{region}}" >Stop</a> </td>
+             {% for st,ty in det.items %}
+            <td><h3>{{ty}}</h3></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        <a href="/" >back</a>
+
+    {% csrf_token %}
+</div>
+<script src="{% static 'js/reload.js' %}"></script>
+</body>
+<html>
 
