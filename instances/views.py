@@ -345,6 +345,8 @@ def regioninstances(request):
         request.session['session_aws_secret_access_key'] = aws_secret_access_key
 
         bid_price= request.POST['bid_price']
+        bid_price = float(bid_price)
+
         request.session['bid_price'] = bid_price
 
 
@@ -404,7 +406,7 @@ def regioninstances(request):
             statuss[each]['spot_indi'] = sp_in
 
 
-            if((sp_in == 1) & (float(bid_price) < float(fr_pr)) & (prs == 'running')):
+            if((sp_in == 1) & (bid_price < fr_pr) & (prs == 'running')):
                 print("amiiiiiii creation for spot iinnnnnnnnnnnnnnnssssssssssssss")
                 ami_id = ami_creation_spot(each, session)
                 ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
