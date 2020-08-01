@@ -112,7 +112,7 @@ def check_spot_or_not(ec2_con_re):
 
     return spot_ins
 
-def get_platform_details(ami):
+def get_platform_details( ami):
     print()
     client = boto3.client('ec2')
 
@@ -135,7 +135,7 @@ def get_platform_details(ami):
 
 
 
-def get_az(ins_id):
+def get_az( ins_id):
     print()
     client = boto3.client('ec2')
     response = client.describe_instances(
@@ -363,10 +363,10 @@ def regioninstances(request):
 
             ami = get_instance_img(each)
 
-            ami_det = get_platform_details(ami)
+            ami_det = get_platform_details( ami)
 
             platform = ami_det['platform']
-            az = get_az(each)
+            az = get_az( each)
             cr_sp = get_curnt_sp(region, type, platform, az)
             sp_in = 0
 
@@ -497,14 +497,14 @@ def get_more_tables(request):
         type = get_instance_type(ec2_con_re, each)
 
 
-        ami = get_instance_img(each)
+        ami = get_instance_img( each)
 
 
-        ami_det = get_platform_details(ami)
+        ami_det = get_platform_details( ami)
 
         platform = ami_det['platform']
         # platform = get_platform_details(ami)
-        az = get_az(each)
+        az = get_az( each)
         cr_sp = get_curnt_sp(region,type,platform,az)
 
 
@@ -542,7 +542,7 @@ def get_more_tables(request):
                     print(person.ami_id)
                     new_img = person.ami_id
 
-                new_ami_det = get_platform_details(new_img)
+                new_ami_det = get_platform_details( new_img)
                 # new_ami = new_ami_det['state']
 
                 if((ami_creation.objects.filter(instance_id=each).exists() == 1) & (new_ami_det['state'] == 'available')):
@@ -551,7 +551,7 @@ def get_more_tables(request):
                     ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, new_img)
                 else:
 
-                     img = get_instance_img(each)
+                     img = get_instance_img( each)
                      ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, img)
 
 
@@ -570,7 +570,7 @@ def get_more_tables(request):
                 print(person.ami_id)
                 new_img = person.ami_id
 
-            new_ami_det = get_platform_details(new_img)
+            new_ami_det = get_platform_details( new_img)
             if((new_ami_det['state'] == 'available')):
                 instance_termination(each)
 
@@ -586,7 +586,7 @@ def get_more_tables(request):
                     print(person.ami_id)
                     new_img = person.ami_id
 
-                new_ami_det = get_platform_details(new_img)
+                new_ami_det = get_platform_details( new_img)
 
                 if ((ami_creation.objects.filter(instance_id=each).exists() == 1) & (new_ami_det['state'] == 'available')):
 
@@ -602,7 +602,7 @@ def get_more_tables(request):
 
                 else:
 
-                    img = get_instance_img(each)
+                    img = get_instance_img( each)
                     # instance_termination(each)
                     req_id = spot_ins_creation(img, type, az)
 
