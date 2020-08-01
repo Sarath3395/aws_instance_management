@@ -577,11 +577,11 @@ def get_more_tables(request):
                 if((ami_creation.objects.filter(instance_id=each).exists() == 1) & (new_ami_det['state'] == 'available')):
                     print("spottttttttttammmmmmmmmmmmmmmmmmmmmmiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                     print(new_img)
-                    ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, ins_type, each, new_img)
+                    ondemandinstancecreate(session, ins_type, each, new_img)
                 else:
 
                      img = get_instance_img( each,session)
-                     ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, ins_type, each, img)
+                     ondemandinstancecreate(session, ins_type, each, img)
 
 
             else:
