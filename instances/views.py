@@ -25,6 +25,14 @@ def get_ec2_con_for_given_region(my_regions,my_aws_access_key_id,my_aws_secret_a
     ec2_con_re = session.resource('ec2',region_name=my_regions)
     return ec2_con_re
 
+def get_session(region, usr_aws_access_key_id,usr_aws_secret_access_key):
+    session = boto3.Session(
+        aws_access_key_id=usr_aws_access_key_id,
+        aws_secret_access_key=usr_aws_secret_access_key,
+    )
+    client = session.client('ec2', region_name=region)
+    return client
+
 def list_instances_on_my_region(ec2_con_re):
     ins =[]
     for each in ec2_con_re.instances.all():
@@ -46,9 +54,9 @@ def get_instance_type(ec2_con_re,in_id):
 
     return ty
 
-def get_instance_img(in_id, region):
-    client = boto3.client('ec2', region_name = region)
-    response = client.describe_instances(
+def get_instance_img(in_id, session):
+    # clt = session.client('ec2', region_name=region)
+    response = session.describe_instances(
 
         InstanceIds=[
             in_id,
@@ -63,10 +71,11 @@ def get_instance_img(in_id, region):
     return img_id
 
 
-def ami_creation_spot(in_id):
-    client = boto3.client('ec2')
+def ami_creation_spot(in_id, session):
+    # clt = session.client('ec2', region_name=region)
+    # client = boto3.client('ec2')
 
-    image = client.create_image(
+    image = session.create_image(
         BlockDeviceMappings=[
             {
                 'DeviceName': '/dev/xvda',
@@ -112,11 +121,13 @@ def check_spot_or_not(ec2_con_re):
 
     return spot_ins
 
-def get_platform_details( ami):
+def get_platform_details( ami, session):
     print()
-    client = boto3.client('ec2')
+    # clt = session.client('ec2', region_name=region)
 
-    response = client.describe_images(
+    # client = boto3.client('ec2')
+
+    response = session.describe_images(
 
         ImageIds=[
             ami,
@@ -135,10 +146,12 @@ def get_platform_details( ami):
 
 
 
-def get_az( ins_id):
+def get_az( ins_id, session):
     print()
-    client = boto3.client('ec2')
-    response = client.describe_instances(
+    # clt = session.client('ec2', region_name=region)
+
+    # client = boto3.client('ec2')
+    response = session.describe_instances(
 
         InstanceIds=[
             ins_id,
@@ -167,10 +180,10 @@ def start_instance(ec2_con_re,in_id):
             print("now it is running")
     return
 
-def get_curnt_sp(region,ins_type,platform_det,az):
-    client = boto3.client('ec2', region_name=region)
+def get_curnt_sp(ins_type,platform_det,az, session):
+    # clt = session.client('ec2', region_name=region)
 
-    prices = client.describe_spot_price_history(InstanceTypes=[ins_type], MaxResults=1,
+    prices = session.describe_spot_price_history(InstanceTypes=[ins_type], MaxResults=1,
                                                 ProductDescriptions=[platform_det], AvailabilityZone=az)
     print("sssssssssssssspppppppppppottttttttttttttttttttt")
     print(prices['SpotPriceHistory'][0])
@@ -194,16 +207,16 @@ def stop_instance(ec2_con_re,in_id):
             # each.wait_until_stopped()
             print("now it is stopped")
 
-def instance_termination(ins_id):
-    ec2 = boto3.resource('ec2')
+def instance_termination(ins_id,ec2_con_re):
+    # ec2 = boto3.resource('ec2')
     ids = [ins_id]
-    res = ec2.instances.filter(InstanceIds=ids).terminate()
+    ec2_con_re.instances.filter(InstanceIds=ids).terminate()
     # res.wait_until_terminated()
 
-def get_spot_ins_id(req_id):
-    client = boto3.client('ec2')
+def get_spot_ins_id(req_id, session):
+    # client = boto3.client('ec2')
 
-    response = client.describe_spot_instance_requests(
+    response = session.describe_spot_instance_requests(
         Filters=[
             {
 
@@ -339,6 +352,8 @@ def regioninstances(request):
         ec2_con_re=get_ec2_con_for_given_region(region,aws_access_key_id,aws_secret_access_key)
         print("please wait listing all instances ids in your region{}".format(region))
 
+        session = get_session(region,aws_access_key_id,aws_secret_access_key)
+
         time = datetime.now().replace(microsecond=0, second=0, minute=0)
 
         now = time.strftime("%H:%M:%S")
@@ -361,13 +376,13 @@ def regioninstances(request):
             prs=get_instance_state(ec2_con_re,each)
             type = get_instance_type(ec2_con_re, each)
 
-            ami = get_instance_img(each, region)
+            ami = get_instance_img(each, session)
 
-            ami_det = get_platform_details( ami)
+            ami_det = get_platform_details( ami,session)
 
             platform = ami_det['platform']
-            az = get_az( each)
-            cr_sp = get_curnt_sp(region, type, platform, az)
+            az = get_az( each,session)
+            cr_sp = get_curnt_sp( type, platform, az,session)
             sp_in = 0
 
             if each in spot_ins:
@@ -387,7 +402,7 @@ def regioninstances(request):
 
             if((sp_in == 1) & (bid_price < forcst_prc) & (prs == 'running')):
                 print("amiiiiiii creation for spot iinnnnnnnnnnnnnnnssssssssssssss")
-                ami_id = ami_creation_spot(each)
+                ami_id = ami_creation_spot(each, session)
                 ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
                 ami_obj.save()
             print("ttttttttttttttttttttttttttttttttt")
@@ -397,7 +412,7 @@ def regioninstances(request):
             print(prs)
             if ((sp_in == 0) & (float(bid_price) == float(cr_sp)) & (prs == 'running')):
                 print("amiiiiiii creation for spot iinnnnnnnnnnnnnnnssssssssssssss")
-                ami_id = ami_creation_spot(each)
+                ami_id = ami_creation_spot(each,session)
                 ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
                 ami_obj.save()
             # status[each]['type']=type
@@ -415,14 +430,14 @@ def regioninstances(request):
         return render(request, 'index.html',{'c4': c4})
 
 
-def ondemandinstancecreate(my_aws_access_key_id,my_aws_secret_access_key,ins_type,ter_id,img):
+def ondemandinstancecreate(session,ins_type,ter_id,img):
     print("ondemand_creation")
-    session = boto3.Session(
-        aws_access_key_id=my_aws_access_key_id,
-        aws_secret_access_key=my_aws_secret_access_key,
-    )
-    client = session.client('ec2')
-    created_ins = client.run_instances(ImageId=img,
+    # session = boto3.Session(
+    #     aws_access_key_id=my_aws_access_key_id,
+    #     aws_secret_access_key=my_aws_secret_access_key,
+    # )
+    # client = session.client('ec2')
+    created_ins = session.run_instances(ImageId=img,
                                 InstanceType=ins_type,
                                 MinCount=1,
                                 MaxCount=1)
@@ -434,10 +449,10 @@ def ondemandinstancecreate(my_aws_access_key_id,my_aws_secret_access_key,ins_typ
         ins_cr.save()
 
 
-def spot_ins_creation(ami,_ins_type,az):
-    client = boto3.client('ec2')
+def spot_ins_creation(ami,_ins_type,az, session):
+    # client = boto3.client('ec2')
 
-    response = client.request_spot_instances(
+    response = session.request_spot_instances(
         DryRun=False,
         SpotPrice='0.10',
         InstanceCount=1,
@@ -483,6 +498,8 @@ def get_more_tables(request):
     ec2_con_re = {}
     ec2_con_re = get_ec2_con_for_given_region(region, aws_access_key_id, aws_secret_access_key)
     print("please wait listing all instances ids in your region{}".format(region))
+
+    session = get_session(region, aws_access_key_id, aws_secret_access_key)
     list = list_instances_on_my_region(ec2_con_re)
 
     status = {}
@@ -497,15 +514,15 @@ def get_more_tables(request):
         type = get_instance_type(ec2_con_re, each)
 
 
-        ami = get_instance_img( each,region)
+        ami = get_instance_img( each,session)
 
 
-        ami_det = get_platform_details( ami)
+        ami_det = get_platform_details( ami,session)
 
         platform = ami_det['platform']
         # platform = get_platform_details(ami)
-        az = get_az( each)
-        cr_sp = get_curnt_sp(region,type,platform,az)
+        az = get_az( each,session)
+        cr_sp = get_curnt_sp(type,platform,az,session)
 
 
         spot_in = 0
@@ -542,7 +559,7 @@ def get_more_tables(request):
                     print(person.ami_id)
                     new_img = person.ami_id
 
-                new_ami_det = get_platform_details( new_img)
+                new_ami_det = get_platform_details( new_img,session)
                 # new_ami = new_ami_det['state']
 
                 if((ami_creation.objects.filter(instance_id=each).exists() == 1) & (new_ami_det['state'] == 'available')):
@@ -551,7 +568,7 @@ def get_more_tables(request):
                     ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, new_img)
                 else:
 
-                     img = get_instance_img( each,region)
+                     img = get_instance_img( each,session)
                      ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, img)
 
 
@@ -570,9 +587,9 @@ def get_more_tables(request):
                 print(person.ami_id)
                 new_img = person.ami_id
 
-            new_ami_det = get_platform_details( new_img)
+            new_ami_det = get_platform_details( new_img,session)
             if((new_ami_det['state'] == 'available')):
-                instance_termination(each)
+                instance_termination(each,ec2_con_re)
 
 
                 # instance_termination(each)
@@ -586,7 +603,7 @@ def get_more_tables(request):
                     print(person.ami_id)
                     new_img = person.ami_id
 
-                new_ami_det = get_platform_details( new_img)
+                new_ami_det = get_platform_details( new_img,session)
 
                 if ((ami_creation.objects.filter(instance_id=each).exists() == 1) & (new_ami_det['state'] == 'available')):
 
@@ -595,16 +612,16 @@ def get_more_tables(request):
                     print("ammmmmmmmmmmmmmmmmmmmmmiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                     print(new_img)
                     # instance_termination(each)
-                    req_id = spot_ins_creation(new_img, type, az)
+                    req_id = spot_ins_creation(new_img, type, az, session)
 
                     ins_cr = instance_creation(terminated_id=each, creation_id=req_id)
                     ins_cr.save()
 
                 else:
 
-                    img = get_instance_img( each,region)
+                    img = get_instance_img( each,session)
                     # instance_termination(each)
-                    req_id = spot_ins_creation(img, type, az)
+                    req_id = spot_ins_creation(img, type, az, session)
 
                     ins_cr = instance_creation(terminated_id=each, creation_id=req_id)
                     ins_cr.save()
