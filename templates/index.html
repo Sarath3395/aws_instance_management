@@ -28,7 +28,7 @@
 				<div class="col">
 					<div class="header_content d-flex flex-row align-items-center justify-content-start">
 						<div class="header_content_inner d-flex flex-row align-items-end justify-content-start">
-							<div class="logo"><a href="index.html">AWSInstanceManagement</a></div>
+							<div class="logo"><a href="/">AWSInstanceManagement</a></div>
 							<nav class="main_nav">
 								<ul class="d-flex flex-row align-items-start justify-content-start">
 									<li class="active"><a href="index.html">Home</a></li>
@@ -37,12 +37,12 @@
 									{% if user.is_authenticated%}
 									<li>Hello, {{user.first_name}}</li>
 
-									<li><a href="accounts/logout">Logout</a></li>
+									<li><a href="/accounts/logout">Logout</a></li>
 
 									{% else %}
-									<li><a href="accounts/register">Register</a></li>
+									<li><a href="/accounts/register">Register</a></li>
 
-									<li><a href="accounts/login">Login</a></li>
+									<li><a href="/accounts/login">Login</a></li>
 
 									{% endif %}
 
@@ -187,12 +187,14 @@
 					<div class="home_search_container">
 						<div class="home_search_title">Search for your aws instances</div>
 						<div class="home_search_content">
-							<form action="instances/regioninstances" class="home_search_form" id="home_search_form" method="post">
+							<form action="/instances/regioninstances" class="home_search_form" id="home_search_form" method="post">
 								{% csrf_token %}
 								<div class="d-flex flex-lg-row flex-column align-items-start justify-content-lg-between justify-content-start">
 									<input type="text" class="search_input search_input_1" name="aws_access_key" placeholder="aws_access_key" required="required">
 									<input type="text" class="search_input search_input_2" name="aws_secret_access_key" placeholder="aws_secret_access_key" required="required">
 									<input type="text" class="search_input search_input_3" name="region" placeholder="Region" required="required">
+									<input type="text" class="search_input search_input_3" name="bid_price" placeholder="bid_price" required="required">
+
 
 									<button class="home_search_button">search</button>
 								</div>
@@ -235,6 +237,9 @@
 			</div>
 		</div>
 	</div>
+	<!-- Custom -->
+	{% block content %}
+	{% endblock %}
 
 	<!-- Destinations -->
 
@@ -247,7 +252,7 @@
 				</div>
 			</div>
 			<div class="row destinations_row">
-				<h1><span class="yellow">c4cxlarge</span></h1>
+				<h1><span class="yellow">t2micro Linux/UNIX</span></h1>
 
 <table class="container">
 	<thead>

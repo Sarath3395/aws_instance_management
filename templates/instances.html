@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+{% extends 'index.html' %}
+
+{% block content %}
+
 <html lang="en">
 <head>
 	{% load static %}
@@ -11,6 +14,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 
 <style>
         #_appendHere {
@@ -53,6 +57,9 @@
             <th>Stop</th>
             <th>Type</th>
             <th>Status</th>
+<!--            <th>current_SpotPrice</th>-->
+            <th>Spot_Instance_Indicator</th>
+
         </tr>
 
         {% for ins,det in status.items %}
@@ -67,7 +74,6 @@
         {% endfor %}
         </tbody>
     </table>
-        <a href="/" >back</a>
 
     {% csrf_token %}
 </div>
@@ -75,3 +81,5 @@
 </body>
 <html>
 
+
+{% endblock %}

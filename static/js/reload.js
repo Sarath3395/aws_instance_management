@@ -12,7 +12,7 @@ $(document).ready(function()
             $('#_appendHere').append(response);
             append_increment += 10;
         });
-    }, 2000)
+    }, 10000)
 });
 /*setTimeout(function(){
    window.location.reload(1);
