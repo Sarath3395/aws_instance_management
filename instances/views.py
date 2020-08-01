@@ -367,9 +367,11 @@ def regioninstances(request):
         for person in forcst_prc:
             print(person.fr_price)
             fr_pr = person.fr_price
-
+        print(now)
         print("(((((((((((((((((((")
+        print(fr_pr)
         t = type(float(fr_pr))
+
         e = type(bid_price)
         print(t)
         print(e)
