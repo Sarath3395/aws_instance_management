@@ -88,8 +88,8 @@ def ami_creation_spot(in_id):
     return image['ImageId']
 
 
-def check_spot_or_not(reg):
-    ec2 = boto3.resource('ec2', region_name = reg)
+def check_spot_or_not(ec2_con_re):
+    ec2 = ec2_con_re
     instances = ec2.instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running','stopped','terminated','shutting-down']}])
     spot_ins = []
     # ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
@@ -354,7 +354,7 @@ def regioninstances(request):
         list=list_instances_on_my_region(ec2_con_re)
 
         statuss = {}
-        spot_ins = check_spot_or_not(region)
+        spot_ins = check_spot_or_not(ec2_con_re)
 
         for each in list:
 
@@ -486,7 +486,7 @@ def get_more_tables(request):
     list = list_instances_on_my_region(ec2_con_re)
 
     status = {}
-    spot_ins = check_spot_or_not(region)
+    spot_ins = check_spot_or_not(ec2_con_re)
 
     bid_price = request.session['bid_price']
 
