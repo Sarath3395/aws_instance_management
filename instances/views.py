@@ -46,8 +46,8 @@ def get_instance_type(ec2_con_re,in_id):
 
     return ty
 
-def get_instance_img(in_id):
-    client = boto3.client('ec2')
+def get_instance_img(in_id, region):
+    client = boto3.client('ec2', region_name = region)
     response = client.describe_instances(
 
         InstanceIds=[
@@ -361,7 +361,7 @@ def regioninstances(request):
             prs=get_instance_state(ec2_con_re,each)
             type = get_instance_type(ec2_con_re, each)
 
-            ami = get_instance_img(each)
+            ami = get_instance_img(each, region)
 
             ami_det = get_platform_details( ami)
 
@@ -497,7 +497,7 @@ def get_more_tables(request):
         type = get_instance_type(ec2_con_re, each)
 
 
-        ami = get_instance_img( each)
+        ami = get_instance_img( each,region)
 
 
         ami_det = get_platform_details( ami)
@@ -551,7 +551,7 @@ def get_more_tables(request):
                     ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, new_img)
                 else:
 
-                     img = get_instance_img( each)
+                     img = get_instance_img( each,region)
                      ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, img)
 
 
@@ -602,7 +602,7 @@ def get_more_tables(request):
 
                 else:
 
-                    img = get_instance_img( each)
+                    img = get_instance_img( each,region)
                     # instance_termination(each)
                     req_id = spot_ins_creation(img, type, az)
 
