@@ -358,12 +358,13 @@ def regioninstances(request):
 
         now = time.strftime("%H:%M:%S")
 
+        fr_pr = ""
         forcst_prc = t2micro.objects.filter(time = now)
         # forcst_prc = forcst_prc.price
         print("ffffffffffffffffffffffffffffffffffffffff")
         for person in forcst_prc:
             print(person.price)
-            forcst_prc = person.price
+            fr_pr = person.price
 
 
         list=list_instances_on_my_region(ec2_con_re)
@@ -400,7 +401,7 @@ def regioninstances(request):
             statuss[each]['cr_sp'] = cr_sp
             statuss[each]['spot_indi'] = sp_in
 
-            if((sp_in == 1) & (float(bid_price) < float(forcst_prc)) & (prs == 'running')):
+            if((sp_in == 1) & (float(bid_price) < float(fr_pr)) & (prs == 'running')):
                 print("amiiiiiii creation for spot iinnnnnnnnnnnnnnnssssssssssssss")
                 ami_id = ami_creation_spot(each, session)
                 ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
