@@ -279,11 +279,11 @@ def stop(request):
     for each in list:
 
         prs = get_instance_state(ec2_con_re, each)
-        type = get_instance_type(ec2_con_re, each)
+        ins_type = get_instance_type(ec2_con_re, each)
 
 
         status[each] = {}
-        status[each]['type'] = type
+        status[each]['type'] = ins_type
         status[each]['status'] = prs
 
         # status[each]['type']=type
@@ -312,11 +312,11 @@ def start(request):
     for each in list:
 
         prs = get_instance_state(ec2_con_re, each)
-        type = get_instance_type(ec2_con_re, each)
+        ins_type = get_instance_type(ec2_con_re, each)
         
 
         status[each] = {}
-        status[each]['type'] = type
+        status[each]['type'] = ins_type
         status[each]['status'] = prs
 
         # status[each]['type']=type
@@ -369,7 +369,11 @@ def regioninstances(request):
             fr_pr = float(person.price)
 
         print("(((((((((((((((((((")
-        print(fr_pr)
+        t = type(fr_pr)
+        e = type(bid_price)
+        print(t)
+        print(e)
+
 
         list=list_instances_on_my_region(ec2_con_re)
 
@@ -379,7 +383,7 @@ def regioninstances(request):
         for each in list:
 
             prs=get_instance_state(ec2_con_re,each)
-            type = get_instance_type(ec2_con_re, each)
+            ins_type = get_instance_type(ec2_con_re, each)
 
             ami = get_instance_img(each, session)
 
@@ -387,7 +391,7 @@ def regioninstances(request):
 
             platform = ami_det['platform']
             az = get_az( each,session)
-            cr_sp = get_curnt_sp( type, platform, az,session)
+            cr_sp = get_curnt_sp( ins_type, platform, az,session)
             sp_in = 0
 
             if each in spot_ins:
@@ -400,7 +404,7 @@ def regioninstances(request):
 
 
             statuss[each] = {}
-            statuss[each]['type'] = type
+            statuss[each]['type'] = ins_type
             statuss[each]['status'] = prs
             statuss[each]['cr_sp'] = cr_sp
             statuss[each]['spot_indi'] = sp_in
@@ -517,7 +521,7 @@ def get_more_tables(request):
     for each in list:
 
         prs = get_instance_state(ec2_con_re, each)
-        type = get_instance_type(ec2_con_re, each)
+        ins_type = get_instance_type(ec2_con_re, each)
 
 
         ami = get_instance_img( each,session)
@@ -528,7 +532,7 @@ def get_more_tables(request):
         platform = ami_det['platform']
         # platform = get_platform_details(ami)
         az = get_az( each,session)
-        cr_sp = get_curnt_sp(type,platform,az,session)
+        cr_sp = get_curnt_sp(ins_type,platform,az,session)
 
 
         spot_in = 0
@@ -543,7 +547,7 @@ def get_more_tables(request):
 
 
         status[each] = {}
-        status[each]['type'] = type
+        status[each]['type'] = ins_type
         status[each]['status'] = prs
         status[each]['cr_sp'] = cr_sp
         status[each]['sp_in'] = spot_in
@@ -571,11 +575,11 @@ def get_more_tables(request):
                 if((ami_creation.objects.filter(instance_id=each).exists() == 1) & (new_ami_det['state'] == 'available')):
                     print("spottttttttttammmmmmmmmmmmmmmmmmmmmmiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                     print(new_img)
-                    ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, new_img)
+                    ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, ins_type, each, new_img)
                 else:
 
                      img = get_instance_img( each,session)
-                     ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, type, each, img)
+                     ondemandinstancecreate(aws_access_key_id, aws_secret_access_key, ins_type, each, img)
 
 
             else:
@@ -618,7 +622,7 @@ def get_more_tables(request):
                     print("ammmmmmmmmmmmmmmmmmmmmmiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                     print(new_img)
                     # instance_termination(each)
-                    req_id = spot_ins_creation(new_img, type, az, session)
+                    req_id = spot_ins_creation(new_img, ins_type, az, session)
 
                     ins_cr = instance_creation(terminated_id=each, creation_id=req_id)
                     ins_cr.save()
@@ -627,7 +631,7 @@ def get_more_tables(request):
 
                     img = get_instance_img( each,session)
                     # instance_termination(each)
-                    req_id = spot_ins_creation(img, type, az, session)
+                    req_id = spot_ins_creation(img, ins_type, az, session)
 
                     ins_cr = instance_creation(terminated_id=each, creation_id=req_id)
                     ins_cr.save()
