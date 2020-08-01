@@ -364,8 +364,10 @@ def regioninstances(request):
         print("ffffffffffffffffffffffffffffffffffffffff")
         for person in forcst_prc:
             print(person.price)
-            fr_pr = person.price
+            fr_pr = float(person.price)
 
+        print("(((((((((((((((((((")
+        print(fr_pr)
 
         list=list_instances_on_my_region(ec2_con_re)
 
@@ -400,6 +402,7 @@ def regioninstances(request):
             statuss[each]['status'] = prs
             statuss[each]['cr_sp'] = cr_sp
             statuss[each]['spot_indi'] = sp_in
+
 
             if((sp_in == 1) & (float(bid_price) < float(fr_pr)) & (prs == 'running')):
                 print("amiiiiiii creation for spot iinnnnnnnnnnnnnnnssssssssssssss")
