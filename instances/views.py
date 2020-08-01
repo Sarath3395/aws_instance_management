@@ -89,7 +89,7 @@ def ami_creation_spot(in_id):
 
 
 def check_spot_or_not(reg):
-    ec2 = boto3.resource('ec2', region = reg)
+    ec2 = boto3.resource('ec2', region_name = reg)
     instances = ec2.instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running','stopped','terminated','shutting-down']}])
     spot_ins = []
     # ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
