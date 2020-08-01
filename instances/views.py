@@ -365,11 +365,11 @@ def regioninstances(request):
         # forcst_prc = forcst_prc.price
         print("ffffffffffffffffffffffffffffffffffffffff")
         for person in forcst_prc:
-            print(person.price)
-            fr_pr = float(person.price)
+            print(person.fr_price)
+            fr_pr = person.fr_price
 
         print("(((((((((((((((((((")
-        t = type(fr_pr)
+        t = type(float(fr_pr))
         e = type(bid_price)
         print(t)
         print(e)
