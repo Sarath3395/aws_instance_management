@@ -400,7 +400,7 @@ def regioninstances(request):
             statuss[each]['cr_sp'] = cr_sp
             statuss[each]['spot_indi'] = sp_in
 
-            if((sp_in == 1) & (bid_price < forcst_prc) & (prs == 'running')):
+            if((sp_in == 1) & (float(bid_price) < float(forcst_prc)) & (prs == 'running')):
                 print("amiiiiiii creation for spot iinnnnnnnnnnnnnnnssssssssssssss")
                 ami_id = ami_creation_spot(each, session)
                 ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
