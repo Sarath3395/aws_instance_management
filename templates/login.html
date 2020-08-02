@@ -1,15 +1,70 @@
-<form action = "login" method="post">
-    {% csrf_token %}
+<!--<form action = "login" method="post">-->
+<!--    {% csrf_token %}-->
 
-    <input type = "text" name="username" placeholder="UserName"><br>
+<!--    <input type = "text" name="username" placeholder="UserName"><br>-->
 
-    <input type = "password" name="password" placeholder="Password"><br>
+<!--    <input type = "password" name="password" placeholder="Password"><br>-->
 
-    <input type = "submit"><br>
+<!--    <input type = "submit"><br>-->
 
-</form>
-<div>
-    {% for msg in messages %}
-    <h3>{{msg}}</h3>
-    {% endfor %}
-</div>
+<!--</form>-->
+<html>
+<head>
+    {% load static %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/login.css' %}">
+
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+
+
+
+</head>
+
+<body>
+<div class="sidenav">
+         <div class="login-main-text">
+            <h2>AWS Spot Instance Management<br> Login Page</h2>
+            <p>Login or register from here to access.</p>
+         </div>
+      </div>
+      <div class="main">
+         <div class="col-md-6 col-sm-12">
+            <div class="login-form">
+               <form action = "login" method="post">
+                   {% csrf_token %}
+                  <div class="form-group">
+                     <label>User Name</label>
+                     <input type="text" name="username" class="form-control" placeholder="User Name"  >
+                  </div>
+                  <div class="form-group">
+                     <label>Password</label>
+                     <input type="password" name="password"  class="form-control" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn btn-black">Login</button>
+<!--                  <button  class="btn btn-secondary" value="/accounts/register">Register</button>-->
+                   <a class="btn btn-secondary" href="/accounts/register">Register</a>
+
+                   <a class="btn btn-secondary" href="/">Home</a>
+
+               </form>
+
+                <div>
+
+                {% for msg in messages %}
+                <h3>{{msg}}</h3>
+                {% endfor %}
+                </div>
+
+            </div>
+         </div>
+      </div>
+</body>
+</html>
+
+
+
+<!------ Include the above in your HEAD tag ---------->
+

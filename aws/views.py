@@ -13,6 +13,7 @@ def index(request):
     return render(request, 'index.html', {'c4': c4})
 
 
+def about(request):
 
-
+    return render(request, 'about.html')
 

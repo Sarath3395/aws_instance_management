@@ -99,7 +99,7 @@ def ami_creation_spot(in_id, session):
 
 def check_spot_or_not(ec2_con_re):
     ec2 = ec2_con_re
-    instances = ec2.instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running','stopped','terminated','shutting-down']}])
+    instances = ec2.instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running','stopped','terminated','shutting-down','pending']}])
     spot_ins = []
     # ami_obj = ami_creation(instance_id=each, ami_id=ami_id)
     # ami_obj.save()
