@@ -452,7 +452,10 @@ def ondemandinstancecreate(session,ins_type,ter_id,img):
     created_ins = session.run_instances(ImageId=img,
                                 InstanceType=ins_type,
                                 MinCount=1,
-                                MaxCount=1)
+                                MaxCount=1,KeyName='sarath_aws_kp',
+                                SecurityGroupIds=[
+                                'sg-0e5e525ee4d336a9d',
+                                ],)
     print("createdddddddddddddddddddddddddd")
     for instance in created_ins['Instances']:
         cr_id =instance['InstanceId']
@@ -471,6 +474,7 @@ def spot_ins_creation(ami,_ins_type,az, session):
         Type='one-time',
         LaunchSpecification={
             'ImageId': ami,
+            'KeyName': 'sarath_aws_kp',
             'InstanceType': _ins_type,
             'Placement': {
                 'AvailabilityZone': az,
@@ -486,6 +490,7 @@ def spot_ins_creation(ami,_ins_type,az, session):
                 'Enabled': False
             },
             'SecurityGroupIds': [
+                'sg-0e5e525ee4d336a9d'
             ]
         }
     )
